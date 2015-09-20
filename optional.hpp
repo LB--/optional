@@ -1,5 +1,5 @@
-#ifndef resplunk_util_Optional_HeaderPlusPlus
-#define resplunk_util_Optional_HeaderPlusPlus
+#ifndef LB_optional_optional_HeaderPlusPlus
+#define LB_optional_optional_HeaderPlusPlus
 
 #include <type_traits>
 #include <cstddef>
@@ -7,39 +7,39 @@
 #include <iterator>
 #include <memory>
 
-namespace resplunk
+namespace LB
 {
-	namespace util
+	namespace optional
 	{
 		template<typename T>
-		struct Optional final
+		struct optional final
 		{
 			using Value_t = T;
-			Optional(std::nullptr_t = nullptr) noexcept
+			optional(std::nullptr_t = nullptr) noexcept
 			{
 			}
 			template<typename... Args>
-			Optional(Args &&... args) noexcept
+			optional(Args &&... args) noexcept
 			{
 				new (&data) T{std::forward<Args>(args)...};
 				valid = true;
 			}
-			Optional(Optional const &from) noexcept
-			: Optional(static_cast<T const &>(from))
+			optional(optional const &from) noexcept
+			: optional(static_cast<T const &>(from))
 			{
 			}
-			Optional &operator=(Optional from) noexcept
+			optional &operator=(optional from) noexcept
 			{
 				from.valid = false;
 				std::swap_ranges(std::begin(data), std::end(data), std::begin(from.data));
 				valid = true;
 				return *this;
 			}
-			Optional(Optional &&from) noexcept
+			optional(optional &&from) noexcept
 			{
 				*this = from;
 			}
-			Optional &operator=(Optional &&from) noexcept
+			optional &operator=(optional &&from) noexcept
 			{
 				bool va = valid, vb = from.valid;
 				from.valid = false;
@@ -48,7 +48,7 @@ namespace resplunk
 				from.valid = va;
 				return *this;
 			}
-			~Optional() noexcept
+			~optional() noexcept
 			{
 				if(valid)
 				{
@@ -75,22 +75,22 @@ namespace resplunk
 			bool valid = false;
 		};
 		template<typename T>
-		struct Optional<T &> final
+		struct optional<T &> final
 		{
 			using Value_t = T &;
-			Optional(std::nullptr_t = nullptr) noexcept
+			optional(std::nullptr_t = nullptr) noexcept
 			: v(nullptr)
 			{
 			}
-			Optional(T &t) noexcept
+			optional(T &t) noexcept
 			: v(std::addressof(t))
 			{
 			}
-			Optional(Optional const &) = default;
-			Optional &operator=(Optional const &) = default;
-			Optional(Optional &&) = default;
-			Optional &operator=(Optional &&) = default;
-			~Optional() = default;
+			optional(optional const &) = default;
+			optional &operator=(optional const &) = default;
+			optional(optional &&) = default;
+			optional &operator=(optional &&) = default;
+			~optional() = default;
 
 			operator bool() const noexcept
 			{
