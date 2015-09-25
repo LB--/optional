@@ -19,19 +19,25 @@ namespace LB
 			{
 			}
 			template<typename... Args>
-			optional(Args &&... args) noexcept
+			explicit optional(Args &&... args) noexcept
 			{
-				new (&data) T{std::forward<Args>(args)...};
+				new (data) T(std::forward<Args>(args)...);
+				valid = true;
+			}
+			optional(T const &from) noexcept
+			{
+				new (data) T(from);
 				valid = true;
 			}
 			optional(optional const &from) noexcept
-			: optional(static_cast<T const &>(from))
+			: optional(from.value())
 			{
 			}
-			optional &operator=(optional from) noexcept
+			optional &operator=(optional const &from) noexcept
 			{
+				optional copy = from;
 				from.valid = false;
-				std::swap_ranges(std::begin(data), std::end(data), std::begin(from.data));
+				std::swap_ranges(std::begin(data), std::end(data), std::begin(copy.data));
 				valid = true;
 				return *this;
 			}
@@ -53,7 +59,7 @@ namespace LB
 				if(valid)
 				{
 					valid = false;
-					static_cast<T &>(*this).~T();
+					value().~T();
 				}
 			}
 
@@ -61,11 +67,11 @@ namespace LB
 			{
 				return valid;
 			}
-			operator T &() noexcept
+			T &value() noexcept
 			{
 				return *reinterpret_cast<T *>(data);
 			}
-			operator T const &() const noexcept
+			T const &value() const noexcept
 			{
 				return *reinterpret_cast<T const *>(data);
 			}
@@ -96,11 +102,11 @@ namespace LB
 			{
 				return v != nullptr;
 			}
-			operator T &() noexcept
+			T &value() noexcept
 			{
 				return *v;
 			}
-			operator T const &() const noexcept
+			T const &value() const noexcept
 			{
 				return *v;
 			}
