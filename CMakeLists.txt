@@ -1,8 +1,48 @@
-#cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.4)
 
-project(optional)
+project(LB::optional
+	VERSION 0.0.0
+	LANGUAGES CXX
+)
 
-ADD_BII_TARGETS()
+add_library(optional INTERFACE)
+#set_property(TARGET optional PROPERTY CXX_STANDARD 11)
+target_compile_options(optional
+	INTERFACE
+		"-std=c++11"
+)
+target_include_directories(optional
+	INTERFACE
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+		$<INSTALL_INTERFACE:include>
+)
 
-#set_property(TARGET ${BII_BLOCK_TARGET} PROPERTY CXX_STANDARD 11)
-target_compile_options(${BII_BLOCK_TARGET} INTERFACE "-std=c++11")
+install(
+	TARGETS
+		optional
+	EXPORT optional
+)
+install(
+	EXPORT optional
+	DESTINATION cmake/LB/optional
+	NAMESPACE LB::
+)
+install(
+	FILES
+		"optional.hpp"
+	DESTINATION include/LB/optional
+)
+
+enable_testing()
+
+add_executable(test-basic
+	"test/basic.cpp"
+)
+target_link_libraries(test-basic
+	PUBLIC
+		optional
+)
+add_test(
+	NAME basic
+	COMMAND test-basic
+)
