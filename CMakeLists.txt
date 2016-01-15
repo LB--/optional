@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.4)
 
-project(LB::optional
+project(LB/optional
 	VERSION 0.0.0
 	LANGUAGES CXX
 )
@@ -14,7 +14,7 @@ target_compile_options(optional
 target_include_directories(optional
 	INTERFACE
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-		$<INSTALL_INTERFACE:include>
+		$<INSTALL_INTERFACE:${PROJECT_NAME}/${PROJECT_VERSION}/include>
 )
 
 install(
@@ -24,13 +24,13 @@ install(
 )
 install(
 	EXPORT optional
-	DESTINATION cmake/LB/optional
+	DESTINATION ${PROJECT_NAME}/${PROJECT_VERSION}/cmake
 	NAMESPACE LB::
 )
 install(
 	FILES
 		"optional.hpp"
-	DESTINATION include/LB/optional
+	DESTINATION ${PROJECT_NAME}/${PROJECT_VERSION}/include/${PROJECT_NAME}
 )
 
 enable_testing()
