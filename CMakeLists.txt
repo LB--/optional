@@ -4,6 +4,7 @@ project(LB/optional
 	VERSION 0.0.0
 	LANGUAGES CXX
 )
+set(CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}/${PROJECT_VERSION})
 
 add_library(optional INTERFACE)
 #set_property(TARGET optional PROPERTY CXX_STANDARD 11)
@@ -14,7 +15,7 @@ target_compile_options(optional
 target_include_directories(optional
 	INTERFACE
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-		$<INSTALL_INTERFACE:${PROJECT_NAME}/${PROJECT_VERSION}/include>
+		$<INSTALL_INTERFACE:include>
 )
 
 install(
@@ -24,13 +25,13 @@ install(
 )
 install(
 	EXPORT optional
-	DESTINATION ${PROJECT_NAME}/${PROJECT_VERSION}/cmake
+	DESTINATION cmake
 	NAMESPACE LB::
 )
 install(
 	FILES
 		"optional.hpp"
-	DESTINATION ${PROJECT_NAME}/${PROJECT_VERSION}/include/${PROJECT_NAME}
+	DESTINATION include/${PROJECT_NAME}
 )
 
 enable_testing()
