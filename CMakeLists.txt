@@ -25,7 +25,7 @@ install(
 )
 install(
 	EXPORT optional
-	DESTINATION cmake
+	DESTINATION cmake/LB
 	NAMESPACE LB::
 )
 install(
